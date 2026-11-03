@@ -27,7 +27,7 @@ button{font:inherit;cursor:pointer;border:0}.mainbtn{background:linear-gradient(
 <body><div id="wrap">
 <header><div class="logo">شورش <b>نئون</b> <span style="font-size:11px;color:#9da2bd">/ عملیات نیمه‌شب</span></div>
 <div class="stats"><div class="pill">مرحله<strong id="wave">۱</strong></div><div class="pill">امتیاز<strong id="score">۰</strong></div><div class="pill">سلامتی<strong id="hp">۱۰۰٪</strong></div><div class="pill">دشمن<strong id="left">۰</strong></div></div></header>
-<div id="stage"><canvas id="game"></canvas><div id="overlay"><div class="panel"><div class="eyebrow">NEON DISTRICT • 00:47 AM</div><h1>شهر در تسخیر <span>باندها</span></h1><p>تو «آریا» هستی؛ قهرمان جسور و خوش‌استایل شهر. در خیابان‌های نئونی زنده بمان، موج دشمن‌ها را شکست بده و امتیاز جمع کن.<br>کامپیوتر: حرکت با WASD یا جهت‌ها، نشانه‌گیری با ماوس و شلیک با کلیک یا Space.<br>موبایل: دکمه‌های حرکت و دکمه شلیک.</p><button class="mainbtn" id="start">شروع عملیات 🔥</button></div></div></div>
+<div id="stage"><canvas id="game"></canvas><div id="overlay"><div class="panel"><div class="eyebrow">NEON DISTRICT • 00:47 AM</div><h1>شهر در تسخیر <span>باندها</span></h1><p>تو «آریا» هستی؛ در خیابان‌های نئونی زنده بمان، موج مأموران خلافکار را شکست بده و امتیاز جمع کن. شخصیت‌ها این بار تمام‌قد، با مو، چهره و لباس‌های متفاوت طراحی شده‌اند.<br>کامپیوتر: حرکت با WASD یا جهت‌ها، نشانه‌گیری با ماوس و شلیک با کلیک یا Space.<br>موبایل: دکمه‌های حرکت و دکمه شلیک.</p><button class="mainbtn" id="start">شروع عملیات 🔥</button></div></div></div>
 <div id="touch"><div class="pad"><span></span><button class="ctrl" data-dir="up">▲</button><span></span><button class="ctrl" data-dir="left">◀</button><button class="ctrl" data-dir="down">▼</button><button class="ctrl" data-dir="right">▶</button></div><button id="fire">شلیک<br>⚡</button></div>
 <div id="bottom"><span>❤️ هر برخورد از سلامتی کم می‌کند؛ جعبه‌های کمک را بردار.</span><span class="help">WASD حرکت · Mouse هدف · Space شلیک</span></div>
 </div>
@@ -42,28 +42,53 @@ function resize(){const b=stage.getBoundingClientRect();dpr=Math.min(devicePixel
 function makeCity(){buildings=[];for(let i=0;i<22;i++){let x=Math.random()*W,y=Math.random()*H;buildings.push({x,y,w:35+Math.random()*80,h:22+Math.random()*50,c:i%2?'#18223b':'#201a36'});}}
 function start(){score=0;wave=1;player={x:W/2,y:H/2,r:15,hp:100,angle:0,cool:0,inv:0};bullets=[];foes=[];sparks=[];medkits=[];spawn=0;running=true;$('overlay').style.display='none';last=performance.now();requestAnimationFrame(loop);updateHud();}
 function updateHud(){$('wave').textContent=fa(wave);$('score').textContent=fa(score);$('hp').textContent=fa(Math.max(0,Math.ceil(player.hp)))+'٪';$('left').textContent=fa(foes.length);}
-function enemy(){let side=Math.floor(Math.random()*4),x=side===0?-20:side===1?W+20:Math.random()*W,y=side===2?-20:side===3?H+20:Math.random()*H;foes.push({x,y,r:13+Math.random()*4,hp:1+Math.floor(wave/4),speed:35+Math.random()*18+wave*3,hit:0});}
+function enemy(){let side=Math.floor(Math.random()*4),x=side===0?-20:side===1?W+20:Math.random()*W,y=side===2?-20:side===3?H+20:Math.random()*H;foes.push({x,y,r:13+Math.random()*4,hp:1+Math.floor(wave/4),speed:35+Math.random()*18+wave*3,hit:0,variant:Math.floor(Math.random()*4),angle:0});}
 function burst(x,y,color,n=8){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,s=30+Math.random()*150;sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,t:.35+Math.random()*.4,color});}}
 function shoot(){if(!running||player.cool>0)return;let target=null,dist=Infinity;for(const e of foes){let d=Math.hypot(e.x-player.x,e.y-player.y);if(d<dist){dist=d;target=e;}}let a=target?Math.atan2(target.y-player.y,target.x-player.x):player.angle;bullets.push({x:player.x+Math.cos(a)*19,y:player.y+Math.sin(a)*19,vx:Math.cos(a)*560,vy:Math.sin(a)*560,t:.8});player.cool=.19;burst(player.x+Math.cos(a)*18,player.y+Math.sin(a)*18,'#ffd166',3);}
 function update(dt){if(!running)return;player.cool=Math.max(0,player.cool-dt);player.inv=Math.max(0,player.inv-dt);let dx=(keys.d||keys.ArrowRight||held.right?1:0)-(keys.a||keys.ArrowLeft||held.left?1:0),dy=(keys.s||keys.ArrowDown||held.down?1:0)-(keys.w||keys.ArrowUp||held.up?1:0),len=Math.hypot(dx,dy)||1;player.x+=dx/len*220*dt;player.y+=dy/len*220*dt;player.x=Math.max(18,Math.min(W-18,player.x));player.y=Math.max(18,Math.min(H-18,player.y));if(held.fire||keys[' '])shoot();
 if(foes.length<Math.min(5+wave*2,18)){spawn-=dt;if(spawn<=0){enemy();spawn=Math.max(.25,1.15-wave*.07);}}
-for(const e of foes){let a=Math.atan2(player.y-e.y,player.x-e.x),d=Math.hypot(player.x-e.x,player.y-e.y);e.x+=Math.cos(a)*e.speed*dt;e.y+=Math.sin(a)*e.speed*dt;if(d<e.r+player.r&&player.inv<=0){player.hp-=13;player.inv=.65;shake=8;burst(player.x,player.y,'#ff477e',12);if(player.hp<=0){player.hp=0;end();}}}
+for(const e of foes){let a=Math.atan2(player.y-e.y,player.x-e.x),d=Math.hypot(player.x-e.x,player.y-e.y);e.angle=a;e.x+=Math.cos(a)*e.speed*dt;e.y+=Math.sin(a)*e.speed*dt;if(d<e.r+player.r&&player.inv<=0){player.hp-=13;player.inv=.65;shake=8;burst(player.x,player.y,'#ff477e',12);if(player.hp<=0){player.hp=0;end();}}}
 for(const b of bullets){b.x+=b.vx*dt;b.y+=b.vy*dt;b.t-=dt;for(const e of foes){if(e.hp>0&&Math.hypot(e.x-b.x,e.y-b.y)<e.r+4){e.hp--;b.t=0;burst(b.x,b.y,'#42e8ff',5);if(e.hp<=0){score+=10;burst(e.x,e.y,'#ff3e9d',12);if(Math.random()<.08)medkits.push({x:e.x,y:e.y,r:9});}}}}
 bullets=bullets.filter(b=>b.t>0&&b.x>-10&&b.x<W+10&&b.y>-10&&b.y<H+10);foes=foes.filter(e=>e.hp>0);
 for(const m of medkits){if(Math.hypot(m.x-player.x,m.y-player.y)<25){player.hp=Math.min(100,player.hp+22);m.t=0;burst(m.x,m.y,'#5dffb1',10);}}medkits=medkits.filter(m=>m.t!==0);
 for(const s of sparks){s.x+=s.vx*dt;s.y+=s.vy*dt;s.t-=dt;s.vx*=.96;s.vy*=.96;}sparks=sparks.filter(s=>s.t>0);
 if(score>=wave*100){wave++;burst(player.x,player.y,'#ffd166',28);}updateHud();}
+function drawAgent(x,y,entity,isHero=false,blink=false){
+ const angle=entity.angle||0,variant=entity.variant||0;
+ const palettes=[['#b52f68','#241a38','#e9b59f','#241629'],['#286c91','#17283c','#dca58e','#38253b'],['#a14b9c','#30203c','#f0c3aa','#21182e'],['#42a58d','#18343a','#c98f78','#201a30']];
+ const p=palettes[variant%palettes.length],skin=p[2],hair=p[3],cloth=isHero?'#202c55':p[0];
+ ctx.save();ctx.translate(x,y);ctx.rotate(angle);if(blink)ctx.globalAlpha=.35;
+ // shadow + boots
+ ctx.fillStyle='#05071199';ctx.beginPath();ctx.ellipse(0,24,15,5,0,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#171727';ctx.lineWidth=5;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(-5,10);ctx.lineTo(-7,20);ctx.moveTo(5,10);ctx.lineTo(8,20);ctx.stroke();
+ ctx.fillStyle='#080b16';ctx.fillRect(-12,18,9,4);ctx.fillRect(5,18,10,4);
+ // torso and fitted jacket
+ ctx.fillStyle=cloth;ctx.shadowColor=isHero?'#42e8ff':'#ff3e9d';ctx.shadowBlur=13;
+ ctx.beginPath();ctx.moveTo(-9,-7);ctx.quadraticCurveTo(-13,-2,-10,10);ctx.lineTo(10,10);ctx.quadraticCurveTo(13,-2,9,-7);ctx.closePath();ctx.fill();ctx.shadowBlur=0;
+ ctx.fillStyle=isHero?'#42e8ff':'#f5a6cf';ctx.fillRect(-2,-6,4,15);
+ // arms
+ ctx.strokeStyle=skin;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-8,-4);ctx.lineTo(-14,5);ctx.moveTo(8,-4);ctx.lineTo(13,2);ctx.stroke();
+ // neck + face
+ ctx.fillStyle=skin;ctx.fillRect(-3,-13,6,7);ctx.beginPath();ctx.ellipse(0,-19,7,8,0,0,Math.PI*2);ctx.fill();
+ // hair framing face, hair bun/long locks
+ ctx.fillStyle=hair;ctx.beginPath();ctx.arc(0,-21,8,Math.PI,Math.PI*2);ctx.lineTo(8,-17);ctx.quadraticCurveTo(11,-8,7,-7);ctx.lineTo(5,-15);ctx.lineTo(-6,-15);ctx.lineTo(-8,-8);ctx.quadraticCurveTo(-12,-16,-7,-22);ctx.closePath();ctx.fill();
+ // facial features
+ ctx.fillStyle='#281b24';ctx.fillRect(-4,-20,2,1.5);ctx.fillRect(3,-20,2,1.5);
+ ctx.strokeStyle='#8d4c50';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(-.5,-16);ctx.moveTo(-2,-14);ctx.quadraticCurveTo(0,-13,2,-14);ctx.stroke();
+ // weapon, held forward
+ ctx.fillStyle='#aeb9ca';ctx.fillRect(10,-1,13,3);ctx.fillStyle='#343c50';ctx.fillRect(12,2,4,4);
+ ctx.restore();
+}
 function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#101629';ctx.fillRect(0,0,W,H);
 ctx.strokeStyle='#27314b';ctx.lineWidth=1;for(let x=0;x<W;x+=48){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
 for(const b of buildings){ctx.fillStyle=b.c;ctx.fillRect(b.x,b.y,b.w,b.h);ctx.strokeStyle='#35405c';ctx.strokeRect(b.x,b.y,b.w,b.h);ctx.fillStyle='#ff4a9e55';for(let x=b.x+7;x<b.x+b.w-5;x+=13)ctx.fillRect(x,b.y+7,4,3);}
 for(const m of medkits){ctx.fillStyle='#5dffb1';ctx.shadowColor='#5dffb1';ctx.shadowBlur=14;ctx.fillRect(m.x-7,m.y-7,14,14);ctx.fillStyle='#123';ctx.fillRect(m.x-2,m.y-5,4,10);ctx.fillRect(m.x-5,m.y-2,10,4);ctx.shadowBlur=0;}
 for(const b of bullets){ctx.fillStyle='#ffe18b';ctx.shadowColor='#ffcf60';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(b.x,b.y,4,0,7);ctx.fill();ctx.shadowBlur=0;}
-for(const e of foes){ctx.save();ctx.translate(e.x,e.y);ctx.fillStyle='#3a1637';ctx.shadowColor='#ff3e9d';ctx.shadowBlur=13;ctx.beginPath();ctx.arc(0,0,e.r,0,7);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#ff5caa';ctx.fillRect(-7,-3,14,5);ctx.fillStyle='#fff';ctx.fillRect(-5,-2,3,2);ctx.fillRect(3,-2,3,2);ctx.restore();}
+for(const e of foes){drawAgent(e.x,e.y,e,false);}
 for(const s of sparks){ctx.globalAlpha=Math.max(0,s.t*2);ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(s.x,s.y,2.5,0,7);ctx.fill();}ctx.globalAlpha=1;
-ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.angle);if(player.inv>0&&Math.floor(player.inv*18)%2===0)ctx.globalAlpha=.4;
-ctx.shadowColor='#ff3e9d';ctx.shadowBlur=20;ctx.fillStyle='#ff3e9d';ctx.beginPath();ctx.ellipse(0,0,13,17,0,0,7);ctx.fill();ctx.shadowBlur=0;
-ctx.fillStyle='#f4c8b8';ctx.beginPath();ctx.arc(0,-12,8,0,7);ctx.fill();ctx.fillStyle='#25213c';ctx.beginPath();ctx.arc(-1,-15,8,3.1,6.2);ctx.fill();ctx.fillStyle='#42e8ff';ctx.fillRect(7,-3,17,5);ctx.fillStyle='#fff';ctx.fillRect(2,-13,2,2);ctx.restore();
-ctx.fillStyle='#fff';ctx.font='12px Vazirmatn';ctx.textAlign='center';ctx.fillText('آریا',player.x,player.y+30);}
+drawAgent(player.x,player.y,{angle:player.angle,variant:2},true,player.inv>0&&Math.floor(player.inv*18)%2===0);
+ctx.fillStyle='#fff';ctx.font='12px Vazirmatn';ctx.textAlign='center';ctx.fillText('آریا',player.x,player.y+43);}
 function loop(t){if(!running)return;let dt=Math.min((t-last)/1000,.04);last=t;update(dt);ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.8;}draw();ctx.restore();if(running)requestAnimationFrame(loop);}
 function end(){running=false;$('overlay').style.display='flex';$('overlay').innerHTML='<div class="panel"><div class="eyebrow">MISSION FAILED</div><h1>عملیات <span>تمام شد!</span></h1><p>امتیاز نهایی: '+fa(score)+'<br>تا اینجا عالی جنگیدی؛ یک بار دیگر شهر را نجات بده.</p><button class="mainbtn" id="again">شروع دوباره 🔥</button></div>';$('again').onclick=start;}
 window.addEventListener('keydown',e=>{keys[e.key]=true;if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();});window.addEventListener('keyup',e=>keys[e.key]=false);
