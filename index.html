@@ -1,93 +1,33 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>بازی حدس عدد یاسر</title>
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101827"><title>عملیات شهر | شکار دزد</title>
 <style>
-body {
-  background: #172554;
-  color: white;
-  font-family: Tahoma;
-  text-align: center;
-  padding: 30px 15px;
-}
-.game {
-  background: #1e40af;
-  padding: 25px;
-  border-radius: 20px;
-  max-width: 400px;
-  margin: auto;
-}
-input, button {
-  padding: 13px;
-  border: 0;
-  border-radius: 10px;
-  font-size: 18px;
-  margin: 8px;
-}
-button {
-  background: #facc15;
-  cursor: pointer;
-}
-#message {font-size: 19px; margin: 20px;}
-</style>
-</head>
-<body>
-<div class="game">
-<h1>🎮 بازی حدس عدد</h1>
-<p>من یک عدد بین ۱ تا ۱۰۰ انتخاب کردم!</p>
-<p>می‌تونی پیداش کنی؟</p>
-
-<input id="guess" type="number" min="1" max="100"
-placeholder="عددت رو وارد کن">
-
-<br>
-<button onclick="check()">حدس بزن</button>
-<button onclick="reset()">شروع دوباره</button>
-
-<div id="message">منتظر حدست هستم!</div>
-<p>تعداد تلاش‌ها: <span id="count">۰</span></p>
-</div>
-
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800;900&display=swap');
+:root{--bg:#091321;--panel:#14243a;--line:#304762;--gold:#ffc857;--cyan:#42d9e8;--red:#ff647c;--green:#54e39a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#263d5b,#101b2c 55%,#080e18);color:#f5f7fb;font-family:Vazirmatn,Tahoma,sans-serif}.app{max-width:1100px;margin:auto;padding:16px}
+header,.section-head,.stats,.controls{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.logo{font-size:27px;font-weight:900}.logo span{color:var(--gold)}.sub,.section-head span{color:#9fb0c7;font-size:12px}.stats{justify-content:flex-end}.stat{background:#18283d;border:1px solid var(--line);padding:7px 11px;border-radius:12px;font-size:13px}.stat b{color:var(--gold)}
+.hero{position:relative;overflow:hidden;border:1px solid #405773;border-radius:22px;min-height:220px;padding:22px;margin-top:16px;background:linear-gradient(110deg,#07101df2,#102a42d9),repeating-linear-gradient(90deg,transparent 0 65px,#ffffff08 66px 68px)}.hero:after{content:"";position:absolute;inset:auto 0 0;height:40px;background:repeating-linear-gradient(90deg,#151e2b 0 90px,#1b2939 91px 94px);border-top:3px solid #465367}.hero-content{position:relative;z-index:1;max-width:650px}.kicker{color:var(--cyan);font-size:12px;font-weight:800}h1{font-size:clamp(24px,5vw,38px);margin:7px 0}.hero p{color:#c3d0df;line-height:1.9;font-size:14px}.clue{display:inline-flex;gap:9px;align-items:center;background:#0b1625e8;border:1px solid #476079;border-radius:14px;padding:10px 14px;font-weight:700}
+.section-head{margin:20px 2px 10px}.section-head h2{font-size:17px;margin:0}.suspects{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.person{position:relative;background:linear-gradient(160deg,#1c2c42,#111c2d);border:1px solid #344861;border-radius:18px;min-height:205px;padding:12px 8px;text-align:center;color:white;transition:.2s;overflow:hidden}.person:active{transform:scale(.98)}.person.selected{border:2px solid var(--gold);box-shadow:0 0 0 3px #ffc85722}.person.caught{border:2px solid var(--green);background:linear-gradient(160deg,#164532,#112b2a)}.person.wrong{border:2px solid var(--red);opacity:.6}.number{position:absolute;top:8px;right:9px;background:#0b1422;border:1px solid #40536d;border-radius:8px;padding:2px 7px;font-size:11px}.avatar{height:112px;display:flex;align-items:center;justify-content:center;position:relative}.body{font-size:75px;filter:drop-shadow(0 8px 5px #0008)}.accessory{position:absolute;bottom:8px;right:calc(50% - 43px);font-size:25px}.person h3{margin:3px 0 1px;font-size:14px}.person small{color:#9fb0c7;font-size:11px}.select-mark{display:none;position:absolute;inset:0;background:#ffc85722;align-items:center;justify-content:center;font-size:32px;color:var(--gold)}.selected .select-mark{display:flex}.reveal{display:none;color:#8ff0bd;font-size:11px}.caught .reveal{display:block}
+.controls{justify-content:center;margin:18px 0}.action{border:0;border-radius:13px;padding:12px 22px;font-weight:900;min-width:140px;cursor:pointer}.fire{background:linear-gradient(135deg,#ffcb5b,#ff9d43);color:#251708}.hint,.restart{background:#1b2d43;color:#dce8f5;border:1px solid #405673}.action:disabled{opacity:.4;cursor:not-allowed}.message{min-height:54px;text-align:center;padding:13px;border:1px solid var(--line);border-radius:14px;background:#111d2d;color:#c6d3e2}.good{border-color:#2c9868!important;color:#8ff0bd!important;background:#102c26!important}.bad{border-color:#a94a5a!important;color:#ff9eaa!important;background:#301923!important}.footer{text-align:center;color:#8194ad;font-size:11px;margin:14px}
+.overlay{position:fixed;inset:0;background:#050a12e8;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.overlay.show{display:flex}.modal{width:min(440px,100%);text-align:center;background:linear-gradient(150deg,#1c3048,#101a2a);border:1px solid #526780;border-radius:22px;padding:25px}.big{font-size:58px}.modal p{color:#b8c7d9;line-height:1.9;white-space:pre-line}.pulse{animation:pulse .55s ease}@keyframes pulse{to{box-shadow:0 0 0 28px #42d9e800}}
+@media(max-width:720px){.app{padding:12px}.suspects{grid-template-columns:repeat(2,minmax(0,1fr))}.person{min-height:190px}.hero{min-height:235px}}@media(min-width:520px) and (max-width:720px){.suspects{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style></head><body><main class="app">
+<header><div><div class="logo">عملیات <span>شهر</span></div><div class="sub">پرونده سرقت در منطقه مرکزی</div></div><div class="stats"><div class="stat">مرحله <b id="level">۱</b></div><div class="stat">امتیاز <b id="score">۰</b></div><div class="stat">رکورد <b id="best">۰</b></div><div class="stat">جان <b id="lives">❤️❤️❤️</b></div></div></header>
+<section class="hero"><div class="hero-content"><div class="kicker">واحد ویژه پلیس • پرونده ۰۷۴</div><h1>دزد بین مظنون‌هاست!</h1><p>سرنخ را بخوان، یکی از پنج مظنون را انتخاب کن و با ابزار شوک غیرکشنده او را متوقف کن. هر اشتباه یک جان کم می‌کند. با هر مرحله سرعت عملت را بالا ببر.</p><div class="clue">🔎 <span id="clueText">در حال دریافت سرنخ...</span></div></div></section>
+<div class="section-head"><h2>مظنون‌های حاضر در صحنه</h2><span>برای انتخاب روی کارت بزن</span></div><section class="suspects" id="suspects"></section>
+<div class="controls"><button class="action hint" id="hintBtn">💡 سرنخ کمکی</button><button class="action fire" id="fireBtn" disabled>⚡ شلیک شوک</button><button class="action restart" id="restartBtn">↻ شروع دوباره</button></div>
+<div class="message" id="message" aria-live="polite">یک مظنون را انتخاب کن.</div><div class="footer">شخصیت‌ها بزرگسال و بازی کاملاً خیالی است؛ افکت شوک غیرکشنده است. رکورد روی همین دستگاه ذخیره می‌شود.</div></main>
+<div class="overlay" id="overlay"><div class="modal"><div class="big" id="modalIcon">🏆</div><h2 id="modalTitle">آفرین!</h2><p id="modalText"></p><button class="action fire" id="modalBtn">مرحله بعد</button></div></div>
 <script>
-let secret = Math.floor(Math.random() * 100) + 1;
-let attempts = 0;
-let finished = false;
-
-function check() {
-  if (finished) return;
-  let input = document.getElementById("guess");
-  let n = Number(input.value);
-  let msg = document.getElementById("message");
-
-  if (!input.value || n < 1 || n > 100) {
-    msg.textContent = "یک عدد بین ۱ تا ۱۰۰ وارد کن!";
-    return;
-  }
-
-  attempts++;
-  document.getElementById("count").textContent = attempts;
-
-  if (n === secret) {
-    msg.textContent = "🎉 آفرین! برنده شدی!";
-    finished = true;
-  } else if (n < secret) {
-    msg.textContent = "عدد من بزرگ‌تره! 🔼";
-  } else {
-    msg.textContent = "عدد من کوچک‌تره! 🔽";
-  }
-  input.value = "";
-}
-
-function reset() {
-  secret = Math.floor(Math.random() * 100) + 1;
-  attempts = 0;
-  finished = false;
-  document.getElementById("count").textContent = "۰";
-  document.getElementById("message").textContent = "عدد جدید انتخاب شد! شروع کن!";
-  document.getElementById("guess").value = "";
-}
-</script>
-</body>
-</html>
+const people=[{name:"آوا",emoji:"👩🏻‍🦰",tag:"کیف قرمز",icon:"👜",trait:"کیف قرمز"},{name:"رها",emoji:"👩🏽",tag:"عینک آفتابی",icon:"🕶️",trait:"عینک آفتابی"},{name:"نیلا",emoji:"👩🏼‍🦱",tag:"شال زرد",icon:"🧣",trait:"شال زرد"},{name:"سارا",emoji:"👩🏾",tag:"کلاه سفید",icon:"🧢",trait:"کلاه سفید"},{name:"هلیا",emoji:"👩🏻‍🦳",tag:"کوله آبی",icon:"🎒",trait:"کوله آبی"}];
+const $=id=>document.getElementById(id),fa=n=>new Intl.NumberFormat('fa-IR').format(n);
+let thief=0,selected=-1,lives=3,score=0,level=1,locked=false,hintUsed=false,best=Number(localStorage.getItem("operationCityBest")||0);
+function update(){ $("level").textContent=fa(level);$("score").textContent=fa(score);$("best").textContent=fa(best);$("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);}
+function start(){selected=-1;locked=false;hintUsed=false;thief=Math.floor(Math.random()*people.length);$("clueText").textContent="مظنون اصلی "+people[thief].trait+" دارد.";$("fireBtn").disabled=true;$("hintBtn").disabled=false;$("message").className="message";$("message").textContent="سرنخ را بررسی کن و یکی از پنج مظنون را انتخاب کن.";render();update();}
+function render(){$("suspects").innerHTML="";people.forEach((p,i)=>{const c=document.createElement("button");c.type="button";c.className="person"+(selected===i?" selected":"");c.setAttribute("aria-label","انتخاب "+p.name);c.innerHTML='<span class="number">۰'+(i+1)+'</span><div class="avatar"><span class="body">'+p.emoji+'</span><span class="accessory">'+p.icon+'</span></div><h3>'+p.name+'</h3><small>'+p.tag+'</small><span class="reveal">نقاب و لباس مبدل کنار رفت</span><span class="select-mark">✓</span>';c.onclick=()=>choose(i);$("suspects").appendChild(c);});}
+function choose(i){if(locked)return;selected=i;render();$("fireBtn").disabled=false;$("message").className="message";$("message").textContent="مظنون "+people[i].name+" انتخاب شد. مطمئنی؟";}
+function modal(icon,title,txt,label,fn){$("modalIcon").textContent=icon;$("modalTitle").textContent=title;$("modalText").textContent=txt+"\nرکورد: "+fa(best);$("modalBtn").textContent=label;$("modalBtn").onclick=()=>{$("overlay").classList.remove("show");fn();};$("overlay").classList.add("show");}
+function shoot(){if(selected<0||locked)return;locked=true;$("fireBtn").disabled=true;$("hintBtn").disabled=true;const cards=[...document.querySelectorAll(".person")];if(selected===thief){score+=100*level;if(score>best){best=score;localStorage.setItem("operationCityBest",best);}cards[selected].classList.add("caught","pulse");$("message").className="message good";$("message").textContent="🎯 درست حدس زدی! دزد با شوک غیرکشنده متوقف شد؛ نقاب و لباس مبدلش آشکار شد.";update();setTimeout(()=>modal("🏆","عملیات موفقیت‌آمیز!","دزد را پیدا کردی و "+fa(100*level)+" امتیاز گرفتی.","مرحله بعد",()=>{level++;start();}),700);}else{lives--;cards[selected].classList.add("wrong");cards[thief].classList.add("caught");$("message").className="message bad";$("message").textContent="❌ اشتباه بود! دزد واقعی "+people[thief].name+" بود.";update();setTimeout(()=>lives<=0?modal("🚨","بازی تمام شد","امتیاز نهایی: "+fa(score),"تلاش دوباره",restart):modal("💥","این بار اشتباه شد","یک جان از دست دادی.","ادامه",start),700);}}
+function hint(){if(locked||hintUsed)return;hintUsed=true;$("hintBtn").disabled=true;$("message").textContent="سرنخ کمکی: دزد همان مظنونی است که "+people[thief].trait+" دارد.";}
+function restart(){lives=3;score=0;level=1;$("overlay").classList.remove("show");start();}
+$("fireBtn").onclick=shoot;$("hintBtn").onclick=hint;$("restartBtn").onclick=restart;start();
+</script></body></html>
